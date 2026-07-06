@@ -4,13 +4,15 @@ from app.requester import fetch_products
 def get_all_items():
     return inventory
 
-def get_item(item_id):
+def get_item_by_id(item_id):
     for item in inventory:
         if item["id"] == item_id:
             return item
     return None
 
 def create_item(data):
+    if not isinstance(data, dict):
+        raise ValueError("Data must be a dict")
     highest_id = 0
     for item in inventory:
         if item["id"] > highest_id:
@@ -27,7 +29,7 @@ def create_item(data):
     return new_item    
 
 def update_item(item_id, data):
-    item = get_item(item_id)
+    item = get_item_by_id(item_id)
     if not item:
         return None
     for key, value in data.items():
@@ -37,7 +39,7 @@ def update_item(item_id, data):
 
 
 def delete_item(item_id):
-    item_to_delete = get_item(item_id)
+    item_to_delete = get_item_by_id(item_id)
     if item_to_delete is None:
         return None
 
@@ -49,14 +51,14 @@ def fetch_and_save(barcode):
     Business rule: When we import from OpenFoodFacts,
     we start with quantity = 0 because we haven't stocked it yet.
     """
-    product = fetch_product(barcode)
+    product = fetch_products(barcode)
     if not product:
         return None
     item = {
         "product_name": product.get("product_name", "Unknown"),
         "brands": product.get("brands", "Unknown"),
         "ingredients_text": product.get("ingredients_text", ""),
-        "quantity": 0,  # Business rule: new imports start at 0
+        "quantity": 0,
         "barcode": barcode
             }
     return create_item(item)

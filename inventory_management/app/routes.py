@@ -1,7 +1,7 @@
 from flask import request, jsonify
 from app import app
 from app.services import (
-    get_all_items, get_item, create_item,
+    get_all_items, get_item_by_id, create_item,
     update_item, delete_item, fetch_and_save
 )
 from app.requester import fetch_products, search_products
@@ -14,7 +14,7 @@ def list_inventory():
 
 @app.route("/inventory/<int:item_id>", methods=["GET"])
 def get_item(item_id):
-    item = get_item(item_id)
+    item = get_item_by_id(item_id)   # <-- was get_item(item_id), now get_item_by_id
     if not item:
         return jsonify({"error": "Not found"}), 404
     return jsonify(item)
@@ -22,8 +22,20 @@ def get_item(item_id):
 @app.route("/inventory", methods=["POST"])
 def add_item():
     data = request.get_json()
+ 
+    if data is None and request.data:
+        try:
+            import json
+            data = json.loads(request.data)
+        except:
+            pass
+    
+    if not isinstance(data, dict):
+        return jsonify({"error": "Request body must be valid JSON object"}), 400
+    
     if not data:
         return jsonify({"error": "No data provided"}), 400
+    
     item = create_item(data)
     return jsonify(item), 201
 
