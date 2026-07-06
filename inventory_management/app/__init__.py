@@ -1,10 +1,6 @@
 from flask import Flask
 
-def create_app():
-    app = Flask(__name__)
 
-    #imports
-    from app.routes import register_routes
-    register_routes(app)
-
-    return app
+app = Flask(__name__)
+from app import routes
+   
