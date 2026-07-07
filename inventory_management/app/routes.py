@@ -14,7 +14,7 @@ def list_inventory():
 
 @app.route("/inventory/<int:item_id>", methods=["GET"])
 def get_item(item_id):
-    item = get_item_by_id(item_id)   # <-- was get_item(item_id), now get_item_by_id
+    item = get_item_by_id(item_id)   
     if not item:
         return jsonify({"error": "Not found"}), 404
     return jsonify(item)

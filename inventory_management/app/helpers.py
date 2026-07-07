@@ -17,5 +17,4 @@ def clean_ingredients(text):
         return "You have reached your limit"
     
 def item_to_string(item):
-    """Pretty format for CLI display."""
     return f"[{item['id']}] {item['product_name']} (Qty: {item['quantity']})"    
