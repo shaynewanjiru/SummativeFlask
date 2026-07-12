@@ -2,7 +2,7 @@ inventory = [
     {
         "id": 1,
         "product_name": "Organic Almond Milk",
-        "brand": "Silk",
+        "brands": "Silk",
         "ingredients_text": "Filtered water, almonds, cane sugar...",
         "quantity": 10,
         "barcode": "012345678901"
@@ -38,5 +38,14 @@ inventory = [
         "ingredients_text": "Semolina wheat, durum wheat flour",
         "quantity": 35,
         "barcode": "076808502947"
-    }  
+    }
 ]
+
+# Optional but recommended: catch this kind of typo automatically at import time
+_barcodes = [item["barcode"] for item in inventory]
+_ids = [item["id"] for item in inventory]
+assert len(_barcodes) == len(set(_barcodes)), "Duplicate barcode found in seed inventory data"
+assert len(_ids) == len(set(_ids)), "Duplicate id found in seed inventory data"
+for _item in inventory:
+    assert "brands" in _item, f"Item id {_item.get('id')} is missing 'brands' key"
+    assert "product_name" in _item, f"Item id {_item.get('id')} is missing 'product_name'"
